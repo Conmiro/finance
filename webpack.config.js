@@ -12,6 +12,8 @@ tag referencing the output bundeled JS file.
 // requires
 const path = require('path');
 const HTMLWebpackPlugin = require('html-webpack-plugin');
+const combineLoaders = require('webpack-combine-loaders');
+
 
 //constants
 const APP_DIR = path.resolve(__dirname, 'src/');
@@ -28,11 +30,22 @@ module.exports = {
     module: {
         loaders: [
             {
-                test: /\.js$/,
+                test: /\.jsx?$/,
                 exclude: /node_modules/,
                 loader: 'babel-loader'
+            },
+            {
+                test: /\.css$/,
+                loader: ['style-loader','css-loader']
+            },
+            {
+                test: /\.scss$/,
+                loader: ['style-loader','css-loader', 'sass-loader']
             }
         ]
+    },
+    resolve: {
+      extensions: ['.js', '.jsx']
     },
     output: {
         filename :'bundle.js',
