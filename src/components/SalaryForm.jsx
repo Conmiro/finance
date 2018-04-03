@@ -1,11 +1,10 @@
 import React from "react";
-import './SalaryForm.scss';
+import '../SalaryForm.scss';
 
 class SalaryForm extends React.Component {
 
     constructor(props) {
         super(props);
-
         // bindings
         this.slideSalary = this.slideSalary.bind(this);
         this.typeAnnualSalary = this.typeAnnualSalary.bind(this);
@@ -14,9 +13,15 @@ class SalaryForm extends React.Component {
         this.releaseSliderSalary = this.releaseSliderSalary.bind(this);
 
         this.state = {
-            salary: this.props.salary,
+            salary: 50000,
             upperLimit: 200000
         };
+        console.log(this.state);
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.budget['salary'] != this.state['salary'])
+            this.updateSalary(nextProps.budget['salary']);
     }
 
 
@@ -26,6 +31,7 @@ class SalaryForm extends React.Component {
         this.setState({
             salary: amount
         });
+        this.updateBudget();
 
 
     };
@@ -37,11 +43,9 @@ class SalaryForm extends React.Component {
         });
         // update upper limit for slider
         salary > 50000 ? this.setState({upperLimit: salary*2}) : this.setState({upperLimit: 200000})
-        console.log('Upper limit new', this.state.upperLimit);
     }
 
     releaseSliderSalary(event) {
-        console.log('release triggered');
         event.type = "touchend" && (event.preventDefault());
         const salary = this.state.salary;
         this.updateSalary(salary);
@@ -64,16 +68,17 @@ class SalaryForm extends React.Component {
     }
 
     getHourly() {
-        //return this.state.salary;
-        if (!this.state.salary) {
-            return "";
-        }
-        return Math.round(this.state.salary / 40 / 52 * 100) / 100;
+        return Math.round(this.state['salary'] / 40 / 52 * 100) / 100;
 
+    }
+
+    updateBudget() {
+        this.props.updateBudget({salary: this.state.salary});
     }
 
     render() {
         return (
+
             <div className = "card">
                 <form>
                     <div className="form-row justify-content-end">
@@ -110,7 +115,7 @@ class SalaryForm extends React.Component {
 }
 
 SalaryForm.defaultProps = {
-    salary: "20000"
+    budget: { }
 };
 
 export default SalaryForm;
